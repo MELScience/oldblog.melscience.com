@@ -1,0 +1,70 @@
+﻿<html style="background-color: #404040">
+
+<script src="mel.js"></script>
+
+<script>
+
+var smLength = 40;
+var lineWidth = 3;
+var lineWidth2 = 2;
+var lineWidth3 = 1;
+var right = 650;
+var y = 400;
+var width = 400;
+var h1 = 30;
+var h2 = 20;
+var h3 = 10;
+
+
+function paint() {
+  var unitNames =  [];
+  var unitLengths =  [];
+
+  unitLengths[0] = smLength * scale;
+  unitNames[0] = "1sm";
+  
+  unitLengths[1] = smLength * scale / 10;
+  unitNames[1] = "1mm";
+  
+  unitLengths[2] = smLength * scale / 100;
+  unitNames[2] = "100µm";
+  
+  unitLengths[3] = smLength * scale / 1000;
+  unitNames[3] = "10µm";
+  
+  unitLengths[4] = smLength * scale / 10000;
+  unitNames[4] = "1µm";
+  
+  unitLengths[5] = smLength * scale / 100000;
+  unitNames[5] = "100nm";
+  
+  unitLengths[6] = smLength * scale / 1000000;
+  unitNames[6] = "10nm";
+  
+  unitLengths[7] = smLength * scale / 10000000;
+  unitNames[7] = "1nm";
+  
+  unitLengths[8] = smLength * scale / 100000000;
+  unitNames[8] = "1Å";
+
+  for (var i=0; i<unitNames.length; i++) {
+    var l = unitLengths[i];
+    if (l>=5 && l<150) {
+      rect(right, y-l, right+l, y, "white");
+    }
+    if (l>=10 && l<150) {
+      var fs = 10;
+      if (l>10 && l<50) {
+        fs = 10*(l-10)/(50-10);
+      }
+      drawTextLeft(right+l-fs, y-5, unitNames[i], "white", fs, "Arial");
+    }
+  }
+  
+//  fillRect(right-lineWidth, y-10, lineWidth, 10, "white");
+  drawTextLeft(right+80, y+25, "x" + scaleString, "white", 15);
+}
+
+</script>
+
+</html>

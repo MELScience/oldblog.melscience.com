@@ -1,0 +1,68 @@
+﻿<html style="background-color: #404040">
+
+<script src="mel.js"></script>
+
+<script>
+
+var smLength = 40;
+var lineWidth = 3;
+var right = 750;
+var y = 350;
+
+function paint() {
+  var unitNames =  [];
+  var unitLengths =  [];
+
+  unitLengths[0] = smLength * scale;
+  unitNames[0] = "1sm";
+  
+  unitLengths[1] = smLength * scale / 10;
+  unitNames[1] = "1mm";
+  
+  unitLengths[2] = smLength * scale / 100;
+  unitNames[2] = "100µm";
+  
+  unitLengths[3] = smLength * scale / 1000;
+  unitNames[3] = "10µm";
+  
+  unitLengths[4] = smLength * scale / 10000;
+  unitNames[4] = "1µm";
+  
+  unitLengths[5] = smLength * scale / 100000;
+  unitNames[5] = "100nm";
+  
+  unitLengths[6] = smLength * scale / 1000000;
+  unitNames[6] = "10nm";
+  
+  unitLengths[7] = smLength * scale / 10000000;
+  unitNames[7] = "1nm";
+  
+  unitLengths[8] = smLength * scale / 100000000;
+  unitNames[8] = "1Å";
+  
+  for (var i=0; i<unitNames.length; i++) {
+    if (unitLengths[i]>10 && unitLengths[i]<300) {
+      var color = "white";
+      if (unitLengths[i]>100) {
+        var n = Math.floor(255-255*(unitLengths[i]-100)/(300-100));
+        color = "rgb(" + n + "," + n + "," + n + ")";
+      }
+      var left = right - unitLengths[i];
+      fillRect(left, y, right-left, lineWidth, color);
+      fillRect(left, y-10, lineWidth, 10, color);
+      drawText(left-10, y-20, unitNames[i], color, 15);
+      if (unitLengths[i]>100) {
+        for (var j=1; j<10; j++) {
+          fillRect(right-unitLengths[i]*j/10, y-10, 1, 10, color);
+        }
+      }
+    }
+  }
+  
+  fillRect(right-lineWidth, y-10, lineWidth, 10, "white");
+  drawTextLeft(right, y+25, "x" + scaleString, "white", 15);
+}
+
+</script>
+
+</html>
