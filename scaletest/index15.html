@@ -66,7 +66,8 @@ function paint() {
       fillRect(left, y-h1, lineWidth, h1, "red");
       fillRect(left+l, y-h, lineWidth2, h, "red");
       if (l>70) {
-        line(left+unitNames[i].length*15*0.8+5, y+20, left+l, y+5, "red");
+        line(left+unitNames[i].length*15*0.8+5, y+20, left+l, y+20, "red");
+        line(left+l, y+20, left+l, y+5, "red");
       }
       drawText(left, y+25, unitNames[i], "red", 15, "Arial");
     }
