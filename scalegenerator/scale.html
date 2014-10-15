@@ -1,0 +1,133 @@
+﻿<html>
+
+<head>
+<title>Scale Frame Generator</title>
+<script src="mel.js"></script>
+</head>
+<body style="background-color: white">
+<script>
+
+var smLength = 60;
+var maxLength = smLength*10;
+var lineWidth = 3;
+var right = maxLength + 195.5;
+var y = 65.5;
+var fontSize = 24;
+
+function paint() {
+  var unitNames =  [];
+  var unitLengths =  [];
+  var unitTextWidth = [];
+
+  unitLengths[0] = smLength * scale;
+  unitNames[0] = "1cm";
+  unitTextWidth[0] = 63;
+  
+  unitLengths[1] = smLength * scale / 10;
+  unitNames[1] = "1mm";
+  unitTextWidth[1] = 75;
+  
+  unitLengths[2] = smLength * scale / 100;
+  unitNames[2] = "100µm";
+  unitTextWidth[2] = 102;
+  
+  unitLengths[3] = smLength * scale / 1000;
+  unitNames[3] = "10µm";
+  unitTextWidth[3] = 84;
+  
+  unitLengths[4] = smLength * scale / 10000;
+  unitNames[4] = "1µm";
+  unitTextWidth[4] = 66;
+  
+  unitLengths[5] = smLength * scale / 100000;
+  unitNames[5] = "100nm";
+  unitTextWidth[5] = 102;
+  
+  unitLengths[6] = smLength * scale / 1000000;
+  unitNames[6] = "10nm";
+  unitTextWidth[6] = 85;
+  
+  unitLengths[7] = smLength * scale / 10000000;
+  unitNames[7] = "1nm";
+  unitTextWidth[7] = 67;
+  
+  unitLengths[8] = smLength * scale / 100000000;
+  unitNames[8] = "1Å";
+  unitTextWidth[8] = 43;
+  
+  for (var i=0; i<unitNames.length; i++) {
+    if (unitLengths[i]>smLength/2 && unitLengths[i]<maxLength) {
+      var color = "white";
+      if (unitLengths[i]>smLength*3.3) {
+        var n = 1-(unitLengths[i]-smLength*3.3)/(maxLength-smLength*3.3);
+        color = "rgba(255, 255, 255, " + n + ")";
+      }
+      var left = right - unitLengths[i];
+      fillRect(left, y, right-left, 4, color);
+      fillRect(left, y-26, 4, 26, color);
+      var textX = left-4;
+      var textWidth = unitTextWidth[i];
+      if (textX + textWidth > right-3) {
+        textX = right - 3 - textWidth;
+      }
+      if (unitLengths[i]>smLength*17/30 && unitLengths[i]<smLength*22/30) {
+        var n = (unitLengths[i]-smLength*17/30)/(smLength*5/30);
+        drawText(textX, y-33, unitNames[i], "rgba(255,255,255," + n + ")", fontSize, "'Myriad Pro'");
+      }
+      if (unitLengths[i]>smLength*22/30) {
+        drawText(textX, y-33, unitNames[i], color, fontSize, "'Myriad Pro'");
+      }
+      if (unitLengths[i]>smLength*3.3) {
+        for (var j=1; j<10; j++) {
+          fillRect(right-unitLengths[i]*j/10, y-18, 2, 18, color);
+        }
+      }
+      if (unitLengths[i]<smLength*3.3 && unitLengths[i]>smLength/3) {
+        var n = (unitLengths[i]-smLength*10/30)/(smLength*100/30-smLength*10/30);
+        color = "rgba(255, 255, 255," + n + ")";
+        for (var j=1; j<10; j++) {
+          fillRect(right-unitLengths[i]*j/10, y-18, 1+n, 18, color);
+        }
+      }
+    }
+  }
+  
+  fillRect(right-4, y-52, 4, 52, "white");
+  drawTextLeft(right-12, y+39, "x" + scaleString, "white", fontSize, "'Myriad Pro'");
+}
+
+function generateFrameImages() {
+  var textArea = document.getElementById("envtext");
+  var envtext = textArea.value;
+  var lines = envtext.split("\n");
+  var firstValue = -1;
+  for (var i=2; i<lines.length; i++) {
+    var s = lines[i].trim();
+    var values = s.split(" ");
+    if (values[0]=="Key") {
+      if (firstValue==-1) {
+        firstValue = values[1];
+      }
+      var scale = Math.exp(2.3025850929940456840179914546844 * (values[1]-firstValue));
+      console.log(values[2] + ":" + scale);      
+    }
+  }
+}
+</script>
+
+<style>
+a {display: block}
+</style>
+<h1>Scale Frames Generator</h1>
+<div>
+<b>ENV file:</b><br>
+<textarea id="envtext" rows="5" cols="60"></textarea><br>
+<button onclick="generateFrameImages(); ">Generate Frame Images</button>
+</div>
+<div style="margin-top: 20px">
+<b>Result</b><br>
+<canvas id="canvas" width="800" height="115" style="background-color: rgb(112, 113, 124)"></canvas>
+<div id="framelist" class="framelist"></div>
+</div>
+</body>
+</html>

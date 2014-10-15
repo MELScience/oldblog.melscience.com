@@ -1,0 +1,124 @@
+﻿<html>
+
+<head>
+<title>Time Frame Generator</title>
+<script src="mel.js"></script>
+</head>
+<body style="background-color: white">
+<script>
+
+var lnOf10 = 2.3025850929940456840179914546844;
+var x = 10;
+var y = 30;
+var y2 = 30;
+var fontSize = 24;
+var color = "white";
+var font = "'Myriad Pro'";
+var secondSuffix = " seconds";
+
+var timeArray = [];
+var scaleArray = [];
+var digitsArray = [];
+var frameDt = 1/25.127;
+
+function paint() {
+  var timeString = "";
+  var t = timeArray[game.frame];
+  var d = digitsArray[game.frame]+2;
+  var first = true;
+
+  timeString = timeString + Math.floor(t);
+
+  while (d>1) {
+    if (first) {
+      timeString = timeString + ".";
+      first = false;
+    } else {
+      timeString = timeString + ",";
+    }
+
+    t = t - Math.floor(t);
+    t = t * 1000;
+    timeString = timeString + numberToStringFixDigits(Math.floor(t), 3);
+    d = d - 3;
+  }
+  
+  drawText(x, y, timeString + secondSuffix, color, fontSize, font);
+  drawText(x, y2, "x" + scaleString, color, fontSize, font);
+}
+
+function val(name) {
+  var e = document.getElementById("el_" + name);
+  console.log(name);
+  return e.value;
+}
+
+function generateFrameImages() {
+  var textArea = document.getElementById("envtext");
+  var envtext = textArea.value;
+  var lines = envtext.split("\n");
+  var firstValue = -1;
+  var n = 0;
+  for (var i=2; i<lines.length; i++) {
+    var s = lines[i].trim();
+    var values = s.split(" ");
+    if (values[0]=="Key") {
+      if (firstValue==-1) {
+        firstValue = values[1];
+      }
+      var rowScale = Math.exp(lnOf10 * (values[1]-firstValue));
+      console.log(values[2] + ":" + rowScale);      
+      scaleArray[n] = rowScale;
+      digitsArray[n] = values[1]-firstValue;
+      if (n==0) {
+        timeArray[n] = frameDt / rowScale;
+      } else {
+        timeArray[n] = timeArray[n-1] + frameDt / rowScale;
+      }
+      n = n + 1;
+    }
+  }
+
+  x = val("x");
+  y = val("y");
+  y2 = val("y2");
+  fontSize = val("fontSize");
+  color = val("color");
+  font = val("font");
+  secondSuffix  = val("secondSuffix");
+
+  initGame();
+}
+</script>
+
+<style>
+a {display: block}
+</style>
+<h1>Time Frames Generator</h1>
+<table width="1200" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td width="600">
+<b>ENV file:</b><br>
+<textarea id="envtext" rows="8" cols="60"></textarea><br>
+</td>
+<td width="600">
+X: <input type="text" id="el_x" width="4" value="10"><br>
+Y: <input type="text" id="el_y" width="4" value="30"><br>
+Y2: <input type="text" id="el_y2" width="4" value="60"><br>
+Font size: <input type="text" id="el_fontSize" width="4" value="24"><br>
+Font name: <input type="text" id="el_font" width="20" value="'Myriad Pro'"><br>
+Suffix: <input type="text" id="el_secondSuffix" width="10" value=" seconds"><br>
+Color: <input type="text" id="el_color" width="20" value="rgb(255,255,255)"><br>
+</td>
+</tr>
+</table>
+<div>
+<button onclick="generateFrameImages(); ">Generate Frame Images</button>
+</div>
+<div style="margin-top: 20px">
+<b>Result</b><br>
+<canvas id="canvas" width="800" height="115" style="background-color: rgb(112, 113, 124)"></canvas>
+<div id="framelist" class="framelist"></div>
+</div>
+</body>
+</html>
