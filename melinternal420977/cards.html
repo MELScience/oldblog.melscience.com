@@ -24,7 +24,7 @@
 </div>
  
 <script type="text/javascript">
-function addExperiment(title, chemicalequation, descriptivename, category, video, safety, coolness, awarness, totalscore) {
+function addExperiment(title, chemicalequation, descriptivename, category, experimentclass, video, safety, coolness, awarness, totalscore) {
   var copy = $("#sample").clone();
   copy.find("#title").html(title);
   copy.find("#descriptivename").html(descriptivename);
@@ -41,21 +41,13 @@ function addExperiment(title, chemicalequation, descriptivename, category, video
   copy.find("#totalscore").html(totalscore);
   copy.find("#chemicalequation").html(chemicalequation);
   copy.find("#category").html("[" + category + "]");
-  $(copy).attr("id", "sample2");
-  if (category.indexOf("metallizing")!=-1) {$(copy).css('background-color', 'blue');}
-  if (category.indexOf("crystals")!=-1) {$(copy).css('background-color', 'blue');}
-  if (category.indexOf("electrochemistry")!=-1) {$(copy).css('background-color', 'blue');}
+  $(copy).attr("id", "asample2");
 
-  if (category.indexOf("precipitation")!=-1) {$(copy).css('background-color', 'green');}
-  if (category.indexOf("color-changes")!=-1) {$(copy).css('background-color', 'green');}
-  if (category.indexOf("analytical-chemistry")!=-1) {$(copy).css('background-color', 'green');}
-
-  if (category.indexOf("gases")!=-1) {$(copy).css('background-color', 'gray');}
-
-  if (category.indexOf("burning")!=-1) {$(copy).css('background-color', 'red');}
-  if (category.indexOf("explosion")!=-1) {$(copy).css('background-color', 'red');}
-  if (category.indexOf("snake")!=-1) {$(copy).css('background-color', 'red');}
-  if (category.indexOf("thermite")!=-1) {$(copy).css('background-color', 'red');}
+  if (experimentclass.indexOf("classics")!=-1) {$(copy).css('background-color', '#5cb85c');}
+  if (experimentclass.indexOf("crystals")!=-1) {$(copy).css('background-color', '#428bca');}
+  if (experimentclass.indexOf("fire")!=-1) {$(copy).css('background-color', '#d9534f');}
+  if (experimentclass.indexOf("house")!=-1) {$(copy).css('background-color', '#f0ad4e');}
+  if (experimentclass.indexOf("metaloelectro")!=-1) {$(copy).css('background-color', 'rgb(127, 127, 127)');}
 
   $("#container").append(copy); 
 }
@@ -72,6 +64,7 @@ function importGSS(json) {
       gss(json, i, "chemicalequation"),
       gss(json, i, "descriptivename"),
       gss(json, i, "category"),
+      gss(json, i, "class"),
       gss(json, i, "video"),
       gss(json, i, "safety3-safe0-dangerous"),
       gss(json, i, "coolness3-cool0-boring"),
@@ -82,9 +75,12 @@ function importGSS(json) {
   console.log(json);
 }
 
+//$("#sample").hide();
+
 </script>
 
 <script src="https://spreadsheets.google.com/feeds/list/1-fKkwmwvF4pezy-jftdP2F-G6RTg7K9nod3qfJ_3H7M/oddcyh0/public/values?alt=json-in-script&callback=importGSS"></script>
+
 
 </body>
 </html>
