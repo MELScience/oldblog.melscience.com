@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>By Category</title>
+  <title>Allowed Experiments</title>
   <script src="jquery.js"></script>
     <link rel="icon" href="/favicon.ico">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -36,9 +36,11 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li id="navCategories" class="active" onclick="onCategoriesClick(); $(this).attr('class', 'active'); return false;"><a href="#">Categories</a></li>
-        <li id="navClasses"><a href="#" onclick="onClassesClick(); return false;">Classes</a></li>
-        <li id="navReagents"><a href="#" onclick="onReagentsClick(); return false;">Reagents</a></li>
+        <li id="navCategories" class="navoption active" onclick="onCategoriesClick(); return false;"><a href="#">Categories</a></li>
+        <li id="navCategoriesByPop" class="navoption" onclick="onCategoriesByPopClick(); return false;"><a href="#">Categories!</a></li>
+        <li id="navClasses" class="navoption"><a href="#" onclick="onClassesClick(); return false;">Classes</a></li>
+        <li id="navReagents" class="navoption"><a href="#" onclick="onReagentsClick(); return false;">Reagents</a></li>
+        <li id="navReagentsByPop" class="navoption"><a href="#" onclick="onReagentsByPopClick(); return false;">Reagents!</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="cards.html" target="_blank">Cards</a></li>
@@ -89,6 +91,33 @@ $('#accShow').on('click', function() {
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="experimentDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="width: 700px;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="experimentDialogTitle">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <p id="experimentDialogDescriptiveName"></p>
+        <p id="experimentDialogReaction"></p>
+        <p>Category: <span id="experimentDialogCategory"></span></p>
+        <p>Class: <span id="experimentDialogClass"></span></p>
+        <p>Reagents:
+        <ul id="experimentDialogReagents" style="margin-top: 0px; padding-top: 0px;">
+        </ul>
+        </p>
+        <div style="width: 700px; height: 1px"></div>
+        <iframe id="experimentDialogVideo" width="640" height="480" src="http://www.youtube.com/embed/B_zD3NxSsD8?rel=0" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 
 
@@ -122,7 +151,39 @@ function addGroup(name, count) {
 }
 
 function showExperimentDialog(id) {
-  alert("#" + id + " " + gss(id, "title"));
+  $("#experimentDialogTitle").html("#" + id + " " + gss(id, "title"));
+  $("#experimentDialogDescriptiveName").html(gss(id, "descriptivename"));
+  $("#experimentDialogReaction").html(gss(id, "chemicalequation"));
+  $("#experimentDialogCategory").html(gss(id, "category"));
+  $("#experimentDialogClass").html(gss(id, "class"));
+
+  var reagentsHtml = "";
+  if (gss(id, "reagent1")!="") {
+    reagentsHtml = reagentsHtml + "<li>" + gss(id, "reagent1") + "</li>";
+  }
+  if (gss(id, "reagent2")!="") {
+    reagentsHtml = reagentsHtml + "<li>" + gss(id, "reagent2") + "</li>";
+  }
+  if (gss(id, "reagent3")!="") {
+    reagentsHtml = reagentsHtml + "<li>" + gss(id, "reagent3") + "</li>";
+  }
+  if (gss(id, "reagent4")!="") {
+    reagentsHtml = reagentsHtml + "<li>" + gss(id, "reagent4") + "</li>";
+  }
+  $("#experimentDialogReagents").html(reagentsHtml);
+
+  var video = gss(id, "video");
+  var pos = video.indexOf("?v=");
+  if (pos!=-1) {
+    var youtubeId = video.substring(pos+3);
+    var videoURL = "http://www.youtube.com/embed/" + youtubeId + "?rel=0";
+    $("#experimentDialogVideo").attr("src", videoURL);
+    $("#experimentDialogVideo").show();
+  } else {
+    $("#experimentDialogVideo").hide();
+  }
+
+  $("#experimentDialog").modal({});
 }
 
 function addExperiment(id, title, chemicalequation, descriptivename, category, experimentclass, video, safety, coolness, awarness, totalscore) {
@@ -167,6 +228,15 @@ function parseJson(json) {
 
 var categories = {};
 var sortedCategories = [];
+var sortedCategoriesByPop = [];
+
+function categorySortFunction(a, b) {
+  var x = categories[a];
+  var y = categories[b];
+
+  return x < y ? 1 : (x > y ? -1 : 0);  
+}
+
 
 function buildCategoryList() {
   for (var i=0; i<experiments.length; i++) {
@@ -185,9 +255,11 @@ function buildCategoryList() {
   for (var c in categories) {
     if (categories.hasOwnProperty(c)) {
       sortedCategories.push(c);
+      sortedCategoriesByPop.push(c);
     }
   }
   sortedCategories.sort();
+  sortedCategoriesByPop.sort(categorySortFunction);
 }
 
 var classes = {};
@@ -214,6 +286,14 @@ function buildClassList() {
 
 var reagents = {};
 var sortedReagents = [];
+var sortedReagentsByPop = [];
+
+function reagentSortFunction(a, b) {
+  var x = reagents[a];
+  var y = reagents[b];
+
+  return x < y ? 1 : (x > y ? -1 : 0);  
+}
 
 function buildReagentList() {
   for (var i=0; i<experiments.length; i++) {
@@ -231,9 +311,11 @@ function buildReagentList() {
   for (var c in reagents) {
     if (reagents.hasOwnProperty(c)) {
       sortedReagents.push(c);
+      sortedReagentsByPop.push(c);
     }
   }
   sortedReagents.sort();
+  sortedReagentsByPop.sort(reagentSortFunction);
 }
 
 
@@ -277,9 +359,7 @@ function importGSS(json) {
 function cleanTheList() {
   $("#groupcontainer").show();
   $("#accordion").children().filter(':not(#groupcontainer)').hide();
-  $("#navClasses").removeClass("active");
-  $("#navCategories").removeClass("active");
-  $("#navReagents").removeClass("active");
+  $(".navoption").removeClass("active");
 }
 
 function onClassesClick() {
@@ -300,6 +380,15 @@ function onCategoriesClick() {
   $("#groupcontainer").hide();
 }
 
+function onCategoriesByPopClick() {
+  cleanTheList();
+  $("#navCategoriesByPop").addClass("active");
+  changeList(sortedCategoriesByPop, categories, function (i, name) {
+    return gss(i, "category").indexOf(name) != -1;
+  });
+  $("#groupcontainer").hide();
+}
+
 function onReagentsClick() {
   cleanTheList();
   $("#navReagents").addClass("active");
@@ -308,6 +397,16 @@ function onReagentsClick() {
   });
   $("#groupcontainer").hide();
 }
+
+function onReagentsByPopClick() {
+  cleanTheList();
+  $("#navReagentsByPop").addClass("active");
+  changeList(sortedReagentsByPop, reagents, function (i, name) {
+    return gss(i, "reagent1") == name || gss(i, "reagent2") == name || gss(i, "reagent3") == name || gss(i, "reagent4") == name ;
+  });
+  $("#groupcontainer").hide();
+}
+
 
 </script>
 
