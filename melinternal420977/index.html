@@ -41,6 +41,10 @@
         <li id="navClasses" class="navoption"><a href="#" onclick="onClassesClick(); return false;">Classes</a></li>
         <li id="navReagents" class="navoption"><a href="#" onclick="onReagentsClick(); return false;">Reagents</a></li>
         <li id="navReagentsByPop" class="navoption"><a href="#" onclick="onReagentsByPopClick(); return false;">Reagents!</a></li>
+        <li id="navAllByCoolness" class="navoption"><a href="#" onclick="onAllByCoolnessClick(); return false;">Coolness</a></li>
+        <li id="navAllBySafety" class="navoption"><a href="#" onclick="onAllBySafetyClick(); return false;">Safety</a></li>
+        <li id="navAllByAwarness" class="navoption"><a href="#" onclick="onAllByAwarnessClick(); return false;">Awarness</a></li>
+        <li id="navAllAwarness" class="navoption"><a href="#" onclick="onAllClick(); return false;">All</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="cards.html" target="_blank">Cards</a></li>
@@ -52,17 +56,20 @@
  
 <p>
 <div id="viewtype" class="btn-group pull-left" data-toggle="buttons" style="dysplay: inline-block;">
-  <label class="btn btn-primary active">
-    <input type="radio" value="list" name="options" id="optionlist" checked>List
+  <label class="btn btn-primary">
+    <input type="radio" value="list" name="options" id="optionlist">List
   </label>
   <label class="btn btn-primary">
     <input type="radio" value="card" name="options" id="optioncards">Cards
+  </label>
+  <label class="btn btn-primary active">
+    <input type="radio" value="table" name="options" id="optioncards" checked>Table
   </label>
 </div>
 <a class="btn btn-primary" href="#" id="accShow" style="margin-left: 20px;">Show All</a>
 
 <script>
-var currentViewType = "list";
+var currentViewType = "table";
 var currentGroupType = "categories";
 
 $('#viewtype input').change(function() {
@@ -122,6 +129,32 @@ $('#accShow').on('click', function() {
         <li id="samplelist" style="overflow:hidden; height: 30px; text-overflow: ellipsis;">
           <span id="title" style="overflow:hidden; height: 20px; text-overflow: ellipsis;" title="">Title</span> <span class="badge pull-right" id="totalscore"></span>
         </li>
+        <table id="tablecontainer" style="border-collapse: collapse; border: 1px solid gray">
+         <tbody>
+         <tr id="headerrow" style="height: 50px; border: 1px solid gray">
+          <td style="width: 40px; border: 1px solid gray; padding-right: 4px" align="right">#</td>
+          <td style="width: 480px; border: 1px solid gray; padding-left: 7px">Title</td>
+          <td style="height: 50px; width: 480px; border: 1px solid gray; padding-left: 7px; overflow:hidden; text-overflow: ellipsis;">Description</td>
+          <td style="height: 50px; width: 300px; border: 1px solid gray; padding-left: 7px;">Equation</td>
+          <td style="height: 50px; width: 150px; border: 1px solid gray; padding-left: 7px;">Category</td>
+          <td style="width: 30px; border: 1px solid gray; padding-left: 3px">Saf</td>
+          <td style="width: 30px; border: 1px solid gray; padding-left: 3px">Coo</td>
+          <td style="width: 30px; border: 1px solid gray; padding-left: 3px">Awa</td>
+          <td style="width: 30px; border: 1px solid gray; padding-left: 3px">Tot</td>
+         </tr>
+         <tr id="sampletable" style="height: 50px; border: 1px solid gray">
+          <td id="expid" style="width: 40px; border: 1px solid gray; padding-right: 4px" align="right">ID</td>
+          <td id="title" style="width: 480px; border: 1px solid gray; padding-left: 7px">TITLE</td>
+          <td id="descriptivename" style="height: 50px; width: 480px; border: 1px solid gray; padding-left: 7px; overflow:hidden; text-overflow: ellipsis;">descriptivename</td>
+          <td id="chemicalequation" style="height: 50px; width: 300px; border: 1px solid gray; padding-left: 7px;">chemicalequation</td>
+          <td id="category" style="height: 50px; width: 150px; border: 1px solid gray; padding-left: 7px;">category</td>
+          <td id="safety" style="width: 30px; border: 1px solid gray; padding-left: 3px">SA</td>
+          <td id="coolness" style="width: 30px; border: 1px solid gray; padding-left: 3px">CO</td>
+          <td id="awarness" style="width: 30px; border: 1px solid gray; padding-left: 3px">AW</td>
+          <td id="totalscore" style="width: 30px; border: 1px solid gray; padding-left: 3px">TO</td>
+         </tr>
+         </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -175,15 +208,21 @@ function addGroup(name, count) {
     $(cattegoryElement).attr("id", "groupcontainer" + groupIndex);
 
     var a = cattegoryElement.find("#groupname");
-    a.html(name + "[" + count + "]");
+    a.html(name + " [" + count + "]");
     a.attr("href", "#collapse" + groupIndex);
 
     var hiddenDiv = cattegoryElement.find("#collapseOne");
     hiddenDiv.attr("id", "collapse" + groupIndex);
 
-    currentGroupContainer = cattegoryElement.find(".panel-body");
+    if (getViewType()=="table") {
+      currentGroupContainer = cattegoryElement.find("#tablecontainer > tbody:last");
+    } else {
+      currentGroupContainer = cattegoryElement.find(".panel-body");
+      $(cattegoryElement).find("#headerrow").remove();
+    }
     $(cattegoryElement).find("#samplecard").remove();
     $(cattegoryElement).find("#samplelist").remove();
+    $(cattegoryElement).find("#sampletable").remove();
     $("#accordion").append(cattegoryElement); 
 }
 
@@ -240,14 +279,13 @@ function addExperiment(id, title, chemicalequation, descriptivename, category, e
     var youtubeId = video.substring(pos+3);
     copy.find("#thumbnail").attr("src","http://img.youtube.com/vi/" + youtubeId + "/0.jpg");
   } else {
-    console.log("XX:" + title + " : " + videoforthumbnail);
     var pos = videoforthumbnail.indexOf("?v=");
     if (pos!=-1) {
-      console.log("AA:" + title);
       var youtubeId = videoforthumbnail.substring(pos+3);
       copy.find("#thumbnail").attr("src","http://img.youtube.com/vi/" + youtubeId + "/0.jpg");
     }
   }
+  copy.find("#expid").html(id);
   copy.find("#safety").html(safety);
   copy.find("#coolness").html(coolness);
   copy.find("#awarness").html(awarness);
@@ -381,6 +419,47 @@ function buildReagentList() {
 }
 
 
+var allByCoolness = {};
+var allBySafety = {};
+var allByAwarness = {};
+var all = {};
+var sortedMarks = ["3", "2", "1", "0"];
+var sortedAll = ["All Experiments"];
+
+function buildFullList() {
+  for (var i=0; i<experiments.length; i++) {
+    var c = "" + Math.floor(parseFloat(gss(i, "coolness3-cool0-boring")));
+    if (c != "") {
+      if (allByCoolness.hasOwnProperty(c)) {
+        allByCoolness[c] = allByCoolness[c] + 1;
+      } else {
+        allByCoolness[c] = 1;
+      }
+    }
+
+    var c = "" + Math.floor(parseFloat(gss(i, "safety3-safe0-dangerous")));
+    if (c != "") {
+      if (allBySafety.hasOwnProperty(c)) {
+        allBySafety[c] = allBySafety[c] + 1;
+      } else {
+        allBySafety[c] = 1;
+      }
+    }
+
+    var c = "" + Math.floor(parseFloat(gss(i, "awarness3-unknown0-everyoneknows")));
+    if (c != "") {
+      if (allByAwarness.hasOwnProperty(c)) {
+        allByAwarness[c] = allByAwarness[c] + 1;
+      } else {
+        allByAwarness[c] = 1;
+      }
+    }
+  }
+
+  all["All Experiments"] = experiments.length;
+}
+
+
 function changeList(groupArr, groupHash, checkFunc) {
   for (var j=0; j<groupArr.length; j++) {
       var groupName = groupArr[j];
@@ -411,6 +490,7 @@ function importGSS(json) {
   buildCategoryList();
   buildClassList();
   buildReagentList();
+  buildFullList();
 
   changeList(sortedCategories, categories, function (i, name) {
     return gss(i, "category").indexOf(name) != -1;
@@ -457,6 +537,30 @@ function updateTheList() {
     });
   }
 
+  if (currentGroupType=="all") {
+    changeList(sortedAll, all, function (i, name) {
+      return true;
+    });
+  }
+
+  if (currentGroupType=="allbycoolness") {
+    changeList(sortedMarks, allByCoolness, function (i, mark) {
+      return Math.floor(parseFloat(gss(i, "coolness3-cool0-boring")))==mark;
+    });
+  }
+
+  if (currentGroupType=="allbysafety") {
+    changeList(sortedMarks, allBySafety, function (i, mark) {
+      return Math.floor(parseFloat(gss(i, "safety3-safe0-dangerous")))==mark;
+    });
+  }
+
+  if (currentGroupType=="allbyawarness") {
+    changeList(sortedMarks, allByAwarness, function (i, mark) {
+      return Math.floor(parseFloat(gss(i, "awarness3-unknown0-everyoneknows")))==mark;
+    });
+  }
+
   $("#groupcontainer").hide();
 }
 
@@ -493,6 +597,34 @@ function onReagentsByPopClick() {
   $(".navoption").removeClass("active");
   updateTheList();
   $("#navReagentsByPop").addClass("active");
+}
+
+function onAllByCoolnessClick() {
+  currentGroupType = "allbycoolness";
+  $(".navoption").removeClass("active");
+  updateTheList();
+  $("#navAllByCoolness").addClass("active");
+}
+
+function onAllBySafetyClick() {
+  currentGroupType = "allbysafety";
+  $(".navoption").removeClass("active");
+  updateTheList();
+  $("#navAllBySafety").addClass("active");
+}
+
+function onAllByAwarnessClick() {
+  currentGroupType = "allbyawarness";
+  $(".navoption").removeClass("active");
+  updateTheList();
+  $("#navAllByAwarness").addClass("active");
+}
+
+function onAllClick() {
+  currentGroupType = "all";
+  $(".navoption").removeClass("active");
+  updateTheList();
+  $("#navAll").addClass("active");
 }
 
 </script>
