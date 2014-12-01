@@ -1,0 +1,34 @@
+<html>
+<body>
+<textarea id="env" rows="20" cols="60"></textarea>
+<script>
+var times = [0,0,  17,10, 20,28, 35,23, 39,19, 42,02, 44,07, 45,17, 46,11, 52,17, 56,25, 62,29, 65,06, 61,19, 73,16, 94,19, ];
+var fps   = [30,   1050,  1000,  1500,  3000,  1500,  1000,  1500,  1000,  1572,  1000,  1572,  1000,  1572,  1050,  30];
+
+var frames = [];
+for (var i=0; i<fps.length; i++) {
+  var f = times[i*2]*30 + times[i*2+1];
+  frames[i] = f;
+}
+
+console.log(frames);
+
+var s = "";
+s += "{ Envelope\n";
+s += "  " + (104*30+13) + "\n";
+
+var curIndex = 0;
+for (var i=0; i<104*30+13; i++) {
+  if (i>frames[curIndex+1]) {
+    curIndex ++;
+  }
+  s += "  Key " + (1+Math.log(fps[curIndex]/30) / Math.LN10) + "\n";
+}
+
+document.getElementById("env").innerHTML = s;
+
+
+</script>
+
+</body>
+</html>
