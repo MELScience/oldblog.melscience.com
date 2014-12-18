@@ -30,7 +30,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Allowed Experiments</a>
+      <a class="navbar-brand" href="#">Experiment Viewer</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -173,6 +173,7 @@ $('#accShow').on('click', function() {
         <iframe id="experimentDialogVideo" width="640" height="480" src="http://www.youtube.com/embed/B_zD3NxSsD8?rel=0" frameborder="0" allowfullscreen></iframe>
       </div>
       <div class="modal-footer">
+        <textarea style="width: 600px; height: 50px; border: 1px solid #E0E0E0; font-size: 10px;" id="experimentDialogYAML">aaa</textarea>
         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -190,7 +191,7 @@ function ellipseString(s, n) {
   if (s.length>n) {
     return s.substring(0, n-3) + "...";
   } else {
-    return s;
+    return s;rl
   }
 }
 
@@ -218,11 +219,76 @@ function addGroup(name, count) {
     $("#accordion").append(cattegoryElement); 
 }
 
+function generateExperimentYAML(id) {
+  var s = "";
+  s = s + "---\n";
+  s = s + "id: ?\n";
+  s = s + "type: experiment\n";
+  s = s + "layout: experiment\n";
+  s = s + "title_name: " + gss(id, "title") + "\n";
+  s = s + "descriptive_name: " + gss(id, "descriptivename") + "\n";
+  s = s + "scientific_name: ?\n";
+  s = s + "category: " + gss(id, "category") + "\n";
+  s = s + "class: " + gss(id, "class") + "\n";
+  s = s + "week: ?\n";
+  s = s + "reaction_formulas:\n"
+  s = s + "  - ?\n";
+  s = s + "reagents:\n"
+  s = s + "  - ?\n";
+  s = s + "  - ?\n";
+  s = s + "youtube_videos:\n";
+  s = s + "  - link: " + gss(id, "youtube") + "\n";
+  s = s + "  - link: ?\n";
+  s = s + "youtube_video_for_thumbnail: ?\n";
+  s = s + "links:\n";
+  s = s + "  - link: " + gss(id, "url") + "\n";
+  s = s + "    title: ?\n";
+  s = s + "    language: en\n";
+  s = s + "  - link: ?\n";
+  s = s + "    title: ?\n";
+  s = s + "    language: en\n";
+  s = s + "step_by_step: |\n";
+  s = s + "  ???\n";
+  s = s + "safety_description: |\n";
+  s = s + "  ??Wear eye protection goggles.??\n";
+  s = s + "science_background: |\n";
+  s = s + "  ???\n";
+  s = s + "safety: " + gss(id, "safety")+ "\n";
+  s = s + "coolness: " + gss(id, "coolness")+ "\n";
+  s = s + "fire: " + gss(id, "fire")+ "\n";
+  s = s + "heating_with_fire: ?\n";
+  s = s + "explosion: " + gss(id, "explosion")+ "\n";
+  s = s + "poisoned_gas: " + gss(id, "poisonedgas")+ "\n";
+  s = s + "heating_with_fire: ?\n";
+  s = s + "organic: " + gss(id, "organic")+ "\n";
+  s = s + "electricity: " + gss(id, "electricity")+ "\n";
+  s = s + "solution: " + gss(id, "solution")+ "\n";
+  s = s + "oxydation_reduction: ?\n";
+  s = s + "color_change: ?\n";
+  s = s + "precipitate: ?\n";
+  s = s + "gassing: ?\n";
+  s = s + "catalyst: ?\n";
+  s = s + "phases_gas: ?\n";
+  s = s + "phases_liquide: ?\n";
+  s = s + "phases_solid: ?\n";
+  s = s + "---\n";
+  
+/*
+
+* result_reagents (list)
+Если этот опыт - это получение какого-то вещества, особенно того, для которого потом есть много опытов как его использовать, то мы указываем такое вещество тут. Если их несколько (хотя такого почти не бывает), то все. Не притягиваем за уши. Если в опыте что-то образуется, но в таких количествах или в такой не удобной форме, что это фиг используешь дальше, то ничего не указываем.
+
+*/
+
+  return s;
+}
+
 function showExperimentDialog(id) {
   $("#experimentDialogTitle").html("#" + id + " " + gss(id, "title"));
   $("#experimentDialogDescriptiveName").html(gss(id, "descriptivename"));
   $("#experimentDialogCategory").html(gss(id, "category"));
   $("#experimentDialogClass").html(gss(id, "class"));
+  $("#experimentDialogYAML").html(generateExperimentYAML(id));
 
   var video = gss(id, "youtube");
   var pos = video.indexOf("?v=");
