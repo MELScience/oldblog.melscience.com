@@ -1,20 +1,45 @@
-﻿<html>
-
+﻿<!doctype html>
+<html lang="en">
 <head>
-<title>Scale Frame Generator</title>
-<script src="mel.js"></script>
+  <meta charset="utf-8">
+  <title>Scale Frame Generator</title>
+  <script src="mel.js"></script>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+  <!-- Bootstrap core CSS -->
+  <link href="http://maxcdn.bootstrapcdn.com/bootswatch/3.2.0/paper/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="http://getbootstrap.com/examples/offcanvas/offcanvas.css" rel="stylesheet">
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
 </head>
-<body style="background-color: white">
+<body style="background-color: white; padding-left: 20px; padding-top: 0px; margin-top: 0px;">
 <script>
 
 var smLength = 60;
 var maxLength = smLength*10;
 var lineWidth = 3;
-var right = maxLength + 195.5;
 var y = 65.5;
 var fontSize = 24;
+var font = "'Myriad Pro'";
+var color = "white";
+var colorR = 255;
+var colorG = 255;
+var colorB = 255;
+var rightXMargin = 195.5;
+
+var scaleArray = [];
 
 function paint() {
+  console.log(rightXMargin);
+  var right = maxLength + parseFloat(rightXMargin);
+
   var unitNames =  [];
   var unitLengths =  [];
   var unitTextWidth = [];
@@ -57,10 +82,10 @@ function paint() {
   
   for (var i=0; i<unitNames.length; i++) {
     if (unitLengths[i]>smLength/2 && unitLengths[i]<maxLength) {
-      var color = "white";
+      var color = "rgb(" + colorR + ", " + colorG + ", " + colorB + ")";
       if (unitLengths[i]>smLength*3.3) {
         var n = 1-(unitLengths[i]-smLength*3.3)/(maxLength-smLength*3.3);
-        color = "rgba(255, 255, 255, " + n + ")";
+        color = "rgba(" + colorR + ", " + colorG + ", " + colorB + ", " + n + ")";
       }
       var left = right - unitLengths[i];
       fillRect(left, y, right-left, 4, color);
@@ -72,10 +97,10 @@ function paint() {
       }
       if (unitLengths[i]>smLength*17/30 && unitLengths[i]<smLength*22/30) {
         var n = (unitLengths[i]-smLength*17/30)/(smLength*5/30);
-        drawText(textX, y-33, unitNames[i], "rgba(255,255,255," + n + ")", fontSize, "'Myriad Pro'");
+        drawText(textX, y-33, unitNames[i], "rgba(" + colorR + ", " + colorG + ", " + colorB + ", " + n + ")", fontSize, font);
       }
       if (unitLengths[i]>smLength*22/30) {
-        drawText(textX, y-33, unitNames[i], color, fontSize, "'Myriad Pro'");
+        drawText(textX, y-33, unitNames[i], color, fontSize, font);
       }
       if (unitLengths[i]>smLength*3.3) {
         for (var j=1; j<10; j++) {
@@ -84,7 +109,7 @@ function paint() {
       }
       if (unitLengths[i]<smLength*3.3 && unitLengths[i]>smLength/3) {
         var n = (unitLengths[i]-smLength*10/30)/(smLength*100/30-smLength*10/30);
-        color = "rgba(255, 255, 255," + n + ")";
+        color = "rgba(" + colorR + ", " + colorG + ", " + colorB + ", " + n + ")";
         for (var j=1; j<10; j++) {
           fillRect(right-unitLengths[i]*j/10, y-18, 1+n, 18, color);
         }
@@ -92,8 +117,14 @@ function paint() {
     }
   }
   
-  fillRect(right-4, y-52, 4, 52, "white");
-  drawTextLeft(right-12, y+39, "x" + scaleString, "white", fontSize, "'Myriad Pro'");
+  fillRect(right-4, y-52, 4, 52, "rgb(" + colorR + ", " + colorG + ", " + colorB + ")");
+  drawTextLeft(right-12, y+39, "x" + scaleString, "rgb(" + colorR + ", " + colorG + ", " + colorB + ")", fontSize, font);
+}
+
+function val(name) {
+  var e = document.getElementById("el_" + name);
+  console.log(name);
+  return e.value;
 }
 
 function generateFrameImages() {
@@ -101,6 +132,7 @@ function generateFrameImages() {
   var envtext = textArea.value;
   var lines = envtext.split("\n");
   var firstValue = -1;
+  var n = 0;
   for (var i=2; i<lines.length; i++) {
     var s = lines[i].trim();
     var values = s.split(" ");
@@ -110,8 +142,23 @@ function generateFrameImages() {
       }
       var scale = Math.exp(2.3025850929940456840179914546844 * (values[1]-firstValue));
       console.log(values[2] + ":" + scale);      
+      scaleArray[n] = scale;
+      n = n + 1;
     }
   }
+
+/*
+  x = val("x");
+  y2 = val("y2");
+*/
+  y = val("y");
+  colorR = val("colorr");
+  colorG = val("colorg");
+  colorB = val("colorb");
+  fontSize = val("fontSize");
+  font = val("font");
+  rightXMargin = val("rightXMargin");
+  initGame();  
 }
 </script>
 
@@ -119,9 +166,24 @@ function generateFrameImages() {
 a {display: block}
 </style>
 <h1>Scale Frames Generator</h1>
-<div>
+<table width="1200" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td width="600">
 <b>ENV file:</b><br>
-<textarea id="envtext" rows="5" cols="60"></textarea><br>
+<textarea id="envtext" rows="8" cols="60"></textarea><br>
+</td>
+<td width="600">
+Right: <input type="text" id="el_rightXMargin" width="4" value="195.5"><br>
+Scale Label Y: <input type="text" id="el_y" width="4" value="65.5"><br>
+Font size: <input type="text" id="el_fontSize" width="4" value="24"><br>
+Font name: <input type="text" id="el_font" width="20" value="'Myriad Pro'"><br>
+Color R: <input type="text" id="el_colorr" width="20" value="255"><br>
+Color G: <input type="text" id="el_colorg" width="20" value="255"><br>
+Color B: <input type="text" id="el_colorb" width="20" value="255"><br>
+</td>
+</tr>
+</table>
+<div>
 <button onclick="generateFrameImages(); ">Generate Frame Images</button>
 </div>
 <div style="margin-top: 20px">
