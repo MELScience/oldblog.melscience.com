@@ -53,7 +53,7 @@ Game.prototype.line = function(x1, y1, x2, y2, color) {
   this.ctx.stroke();
 }
 
-Game.prototype.drawImage = function(x, y, url) {
+Game.prototype.drawImage = function(x, y, url, alpha) {
   var img = null;
   if (this.imageHash.hasOwnProperty(url)) {
     img = this.imageHash[url];
@@ -64,7 +64,10 @@ Game.prototype.drawImage = function(x, y, url) {
   }
   var width = img.width;
   var height = img.height;
+  this.ctx.save();
+  this.ctx.globalAlpha = alpha;
   this.ctx.drawImage(img, x-width/2, y-height/2);
+  this.ctx.restore();
 }
 
 Game.prototype.drawText = function(x, y, text, color, size, font) {
@@ -159,11 +162,6 @@ function nextStep() {
   if (game.frame>=scaleArray.length) return;
   game.clearField();
   scale = scaleArray[game.frame];
-  var fastScaleFlag = false;
-  if (scale<1) {
-    fastScaleFlag  = true;
-    scale = 1/scale;
-  }
   var tempScale = Math.floor(scale);
   scaleString = "";
   if (tempScale>=1000) {
@@ -179,9 +177,6 @@ function nextStep() {
   		scaleString = "" + tempScale%1000 + "," + scaleString;  		
   	}
   }
-  if (!fastScaleFlag && scaleString!="1") {
-    scaleString = "1/" + scaleString;
-  } 
   paint();
   var dataURL = game.canvas.toDataURL("image/png");
   var name = "scale" + numberToStringFixDigits(game.frame, 5) + ".png";

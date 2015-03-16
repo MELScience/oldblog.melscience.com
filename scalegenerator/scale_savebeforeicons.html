@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Scale Frame Generator</title>
-  <script src="mel_scale.js"></script>
+  <script src="mel.js"></script>
   <link rel="icon" href="/favicon.ico">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
@@ -36,42 +36,7 @@ var rightXMargin = 195.5;
 
 var scaleArray = [];
 
-var scaleImageMin = [];
-var scaleImageMax = [];
-var scaleImageNormalMin = [];
-var scaleImageNormalMax = [];
-var scaleImageName = [];
-    
-function registerScaleImage(normalMin, normalMax, imageUrl) {
-  var length = scaleImageMax.length;
-  scaleImageMin[length] = normalMin*0.9;
-  scaleImageMax[length] = normalMax*1.1;
-  scaleImageNormalMin[length] = normalMin;
-  scaleImageNormalMax[length] = normalMax;
-  scaleImageName[length] = imageUrl;
-}
-
-
-registerScaleImage(0, 10, "scale01.png");
-registerScaleImage(10, 250, "scale02.png");
-registerScaleImage(250, 4500, "scale03.png");
-registerScaleImage(4500, 250000, "scale04.png");
-registerScaleImage(250000, 2500000, "scale05.png");
-registerScaleImage(2500000, 15000000, "scale06.png");
-registerScaleImage(15000000, 60000000, "scale07.png");
-registerScaleImage(60000000, 6000000000, "scale08.png");
- 
-               
-var firstPaint = true;
-                                                                                                    
 function paint() {
-  if (firstPaint) {
-    for (var j=0; j<scaleImageName.length; j++) {
-      image(0, 0, scaleImageName[j], 1);
-    }
-    firstPaint = false;
-  }
-
   console.log(rightXMargin);
   var right = maxLength + parseFloat(rightXMargin);
 
@@ -158,22 +123,6 @@ function paint() {
   
   fillRect(right-4, y-52, 4, 52, "rgb(" + colorR + ", " + colorG + ", " + colorB + ")");
   drawTextLeft(right-12, 105.5, "x" + scaleString, "rgb(" + colorR + ", " + colorG + ", " + colorB + ")", fontSize, font);
-
-  for (var j=0; j<scaleImageName.length; j++) {
-    if (scale>scaleImageMin[j] && scale<scaleImageNormalMin[j]) {
-      var alpha = 255*(scale-scaleImageMin[j])/(scaleImageNormalMin[j]-scaleImageMin[j]);
-      if (alpha>255) alpha=255;
-      image(855, 60, scaleImageName[j], alpha);
-    }
-    if (scale>scaleImageNormalMin[j] && scale<scaleImageNormalMax[j]) {
-      image(855, 60, scaleImageName[j], 255);
-    }
-    if (scale>scaleImageNormalMax[j] && scale<scaleImageMax[j]) {
-      var alpha = 255*(scale-scaleImageNormalMax[j])/(scaleImageMax[j]-scaleImageNormalMax[j]);
-      if (alpha>255) alpha=255;
-      image(855, 60, scaleImageName[j], alpha);
-    }
-  }
 }
 
 function val(name) {
@@ -220,7 +169,7 @@ function generateFrameImages() {
 <style>
 a {display: block}
 </style>
-<h1>Scale Frames Generator v7</h1>
+<h1>Scale Frames Generator v5</h1>
 <table width="1200" cellspacing="0" cellpadding="0" border="0">
 <tr>
 <td width="600">
@@ -243,7 +192,7 @@ Color B: <input type="text" id="el_colorb" width="20" value="255"><br>
 </div>
 <div style="margin-top: 20px">
 <b>Result</b> (automate downloading using Workspace Macro)<br>
-<canvas id="canvas" width="950" height="115" style="background-color: rgb(112, 113, 124)"></canvas>
+<canvas id="canvas" width="800" height="115" style="background-color: rgb(112, 113, 124)"></canvas>
 <div id="framelist" class="framelist"></div>
 </div>
 </body>
