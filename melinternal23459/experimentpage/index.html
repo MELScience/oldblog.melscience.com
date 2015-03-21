@@ -12,6 +12,7 @@
     <style>
     h2 {margin-top: 50px;}
     hr {margin-top: 50px; margin-bottom: 30px;}
+    select {margin-top: 5px;}
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -90,20 +91,20 @@ $(function () {
 
 <h2>Оцените опыт</h2>
 <p>
-Какой опыт вам понравился больше?
+Какой из этих двух опытов вам понравился больше? 
 </p>
 <table>
 <tr>
-<td><b>Магическая жидкость</b></td>
-<td style="padding-left: 20px;"><b>Оловянное дерево</b></td>
+<td><b>А. Магическая жидкость</b></td>
+<td style="padding-left: 20px;"><b>Б. Оловянное дерево (3 недели назад)</b></td>
 </tr>
 <tr>
 <td align="center" style="padding-right: 20px; padding-bottom: 10px;"><img src="experiment1.png" width="412"></td>
 <td align="center" style="padding-left: 20px; padding-bottom: 10px;"><img src="experiment2.png" width="412"></td>
 </tr>
 <tr>
-<td align="center"><button>Этот опыт</button></td>
-<td style="padding-left: 20px;" align="center"><button>Этот опыт</button></td>
+<td align="center"><button>Больше понравился этот опыт</button></td>
+<td style="padding-left: 20px;" align="center"><button>Больше понравился этот опыт</button></td>
 </tr>
 </table>
 <hr>
@@ -194,6 +195,17 @@ $(function () {
 <hr/>
 
 <h2>Задания</h2>
+<h3>Видео эксперимента</h3>
+<p>
+Снимите видео эксперимента. Выложите видео вашего опыта в YouTue.
+</p>
+<p>
+<form action="post" method="post">
+Ссылка на YouTube видео: <input type="text"> <input type="submit" value="Послать">
+</form>
+</form>
+</p>
+
 <h3>Зеленый цвет</h3>
 <p>
 Подберите такую кислотность среды, смешивая растворы <a href="reagents/citric_acid_1m.html" title="C6H8O7">лимонной кислоты</a> и <a href="reagents/na2co3_1m.html" title="карбонат натрия">карбоната натрия</a>, чтобы индикатор <a href="reagents/thymol_blue.html" title="тимоловый синий">тимоловый синий</a> в этой среде стал зеленого цвета. Выложите видео вашего опыта в YouTue.
@@ -213,15 +225,25 @@ $(function () {
 <form>
 
 <p>
-<b>1. Чем можно заменить NaHSO<sub>4</sub> в этой реакции, чтобы результат не изменился?</b><br/>
-<input type="checkbox"/> H<sub>2</sub>SO<sub>4</sub> (серная кислота)<br/>
-<input type="checkbox"/> Na<sub>2</sub>SO<sub>4</sub> (cульфат натрия)<br/>
-<input type="checkbox"/> NaHCO<sub>3</sub> (гидрокарбонат натрия)<br/>
-<input type="checkbox"/> HCl (соляная кислота)<br/>
+<b>1. Выберите кислотность каждого из растворов</b><br/>
+<table>
+<tr><td style="padding-right: 10px;">NaHSO<sub>4</sub>:</td><td><select><option>Выберите кислотность</option><option>Кислая среда</option><option>Щелочная среда</option></select></td></tr>
+<tr><td style="padding-right: 10px;">Лимонная кислота:</td><td><select><option>Выберите кислотность</option><option>Кислая среда</option><option>Щелочная среда</option></select></td></tr>
+<tr><td style="padding-right: 10px;">Na<sub>2</sub>CO<sub>3</sub></td><td><select><option>Выберите кислотность</option><option>Кислая среда</option><option>Щелочная среда</option></select></td></tr>
+<tr><td style="padding-right: 10px;">NaOH</td><td><select><option>Выберите кислотность</option><option>Кислая среда</option><option>Щелочная среда</option></select></td></tr>
+</table>
+</p>
+<p>
+
+<b>2. Расположите цвета начиная с цвета с наименьшей энергией фотона, заканчивая цветом с наибольшей энергией фотона</b><br/>
+1. <select><option>Выберите цвет</option><option>Желтый</option><option>Синий</option><option>Зеленый</option><option>Красный</option></select><br/>
+2. <select><option>Выберите цвет</option><option>Желтый</option><option>Синий</option><option>Зеленый</option><option>Красный</option></select><br/>
+3. <select><option>Выберите цвет</option><option>Желтый</option><option>Синий</option><option>Зеленый</option><option>Красный</option></select><br/>
+4. <select><option>Выберите цвет</option><option>Желтый</option><option>Синий</option><option>Зеленый</option><option>Красный</option></select><br/>
 </p>
 
 <p>
-<b>2. Вам был дан концентрированный раствор Na<sub>2</sub>CO<sub>3</sub>. Сколько моль Na<sub>2</sub>CO<sub>3</sub> содержится в одной капле этого раствора?</b><br/>
+<b>3. Вам был дан концентрированный раствор Na<sub>2</sub>CO<sub>3</sub>. Сколько моль Na<sub>2</sub>CO<sub>3</sub> примерно содержится в одной капле этого раствора?</b><br/>
 <input type="radio" name="answer2"/> 10<br/>
 <input type="radio" name="answer2"/> 30<br/>
 <input type="radio" name="answer2"/> 60<br/>
@@ -232,8 +254,7 @@ $(function () {
 </p>
 
 <p>
-<form>
-<b>3. Чем можно заменить NaHSO<sub>4</sub> в этой реакции, чтобы результат не изменился?</b><br/>
+<b>4. Чем можно заменить NaHSO<sub>4</sub> в этой реакции, чтобы результат не изменился?</b><br/>
 <input type="checkbox"/> H<sub>2</sub>SO<sub>4</sub> (серная кислота)<br/>
 <input type="checkbox"/> Na<sub>2</sub>SO<sub>4</sub> (cульфат натрия)<br/>
 <input type="checkbox"/> NaHCO<sub>3</sub> (гидрокарбонат натрия)<br/>
@@ -248,7 +269,12 @@ $(function () {
 <hr/>
 
 <h2>Что-то пошло не так</h2>
-<h3>Не получается получить желтый цвет</h3>
+<h3>1. Не получается получить желтый цвет</h3>
+<p>
+Тут пока нет приличного ответа, да и сам вопрос пока от балды. Но тут будет какой-то разумный вопросы с ответом.
+</p>
+
+<h3>2. Не получается получить желтый цвет</h3>
 <p>
 Тут пока нет приличного ответа, да и сам вопрос пока от балды. Но тут будет какой-то разумный вопросы с ответом.
 </p>
